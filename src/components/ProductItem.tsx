@@ -1,8 +1,8 @@
-import { Image, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
 import { Product } from "../navigations/TopTabNavigator";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-export default function ProductItem({ product }: { product: Product }) {
+export default function ProductItem({ product, onPress }: { product: Product, onPress: () => void }) {
     const { width } = useWindowDimensions()
     const insets = useSafeAreaInsets()
 
@@ -39,7 +39,7 @@ export default function ProductItem({ product }: { product: Product }) {
     });
 
     return (
-        <View style={styles.container}>
+        <TouchableOpacity activeOpacity={0.7} style={styles.container} onPress={onPress}>
             <Image
                 source={{ uri: product.thumbnail }}
                 style={styles.image}
@@ -50,6 +50,6 @@ export default function ProductItem({ product }: { product: Product }) {
             <View style={styles.containerCategory}>
                 <Text style={styles.category}>{product.category}</Text>
             </View>
-        </View>
+        </TouchableOpacity>
     );
 }

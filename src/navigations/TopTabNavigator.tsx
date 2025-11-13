@@ -1,46 +1,19 @@
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-import { getProducts } from "../api/product";
+import { getProductCategories } from "../api/product";
 import { useEffect, useState } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { FlatList, Text, View, ActivityIndicator, Dimensions } from "react-native";
-import ProductItem from "../components/ProductItem";
+import { Text, View, ActivityIndicator, useWindowDimensions } from "react-native";
+import CatalogScreen from "../screens/Catalog";
 
 const TopTab = createMaterialTopTabNavigator();
 
-export type Product = {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    category: string;
-    rating: number;
-    stock: number;
-    thumbnail: string;
-    images: string[];
-};
-
-const ProductList = ({ products }: { products: Product[] }) => {
-    const insets = useSafeAreaInsets();
-
-    return (
-        <View style={{ flex: 1 }}>
-            <FlatList
-                data={products}
-                numColumns={2}
-                contentContainerStyle={{ padding: insets.left + 15, gap: 15, columnGap: 20 }}
-                columnWrapperStyle={{ justifyContent: "space-evenly", gap: 10 }}   
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => <ProductItem product={item} />}
-            />
-        </View>
-    );
-};
-
 export default function TopTabNavigator() {
-    const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
+
+    const { width } = useWindowDimensions()
+
+    const tabWidth = width * 1 / 3
 
     useEffect(() => {
         let isMounted = true;
@@ -48,19 +21,14 @@ export default function TopTabNavigator() {
         const fetch = async () => {
             try {
                 setLoading(true);
-                const response = await getProducts();
+                const response = await getProductCategories();
 
                 if (isMounted && response) {
-                    setProducts(response);
-
-                    const uniqueCategories = Array.from(
-                        new Set(response.map((p: any) => p.category))
-                    );
-                    setCategories(["All", ...uniqueCategories]);
+                    setCategories(response);
                 }
             } catch (err) {
                 if (isMounted) {
-                    setError("Failed to fetch products " + err);
+                    setError("Failed to fetch product categories" + err);
                 }
             } finally {
                 if (isMounted) {
@@ -91,7 +59,7 @@ export default function TopTabNavigator() {
             <View
                 style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
             >
-                <Text style={{ color: "red" }}>{error}</Text>
+                <Text style={{ color: "red", textAlign: 'center' }}>{error}</Text>
             </View>
         );
     }
@@ -106,24 +74,16 @@ export default function TopTabNavigator() {
                 tabBarScrollEnabled: true,
                 lazy: true,
                 tabBarItemStyle: {
-                    width: Dimensions.get('window').width * 1 / 3,
+                    width: tabWidth,
                 }
             }}
         >
-            {categories.map((category) => (
+            {categories.map((category: string) => (
                 <TopTab.Screen
-                    key={category}
-                    name={category}
+                    key={category.name}
+                    name={category.name}
                     children={() => (
-                        <ProductList
-                            products={
-                                category === "All"
-                                    ? products
-                                    : products.filter(
-                                        (p) => p.category === category
-                                    )
-                            }
-                        />
+                        <CatalogScreen category={category.name} />
                     )}
                 />
             ))}

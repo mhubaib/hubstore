@@ -13,29 +13,40 @@ const axiosInstance = axios.create({
     timeout: 10000,
 })
 
-export const getProducts = async (options: {
-    category?: string,
-    search?: string,
-    limit?: number,
-    skip?: number,
-} = {}) => {
-    const { category = '', search = '', limit = 20, skip = 0 } = options;
-
+export const getProductById = async (id: number) => {
     try {
-        let endpoint = '/products'
-
-        if (category) {
-            endpoint = `/products/category/${encodeURIComponent(category)}`;
-        }
-        if (search) {
-            endpoint = `/products/search?q=${encodeURIComponent(search)}`
-        }
-
-        const params = { limit, skip };
-        const response = await axiosInstance.get(endpoint, { params });
-
-        return response.data.products;
+        const response = await axiosInstance.get(`/products/${id}`);
+        return response.data;
     } catch (err) {
-        throw new Error('Error fetching products')
+        throw new Error('Error fetching product detail: ' + (err instanceof Error ? err.message : String(err)))
+    }
+}
+
+export const getProductsByCategory = async ({ category, skip = 0, limit = 20 }: { category: string, skip?: number, limit?: number }) => {
+    try {
+        const params = { skip, limit }
+        const response = await axiosInstance.get(`/products/category/${encodeURIComponent(category)}`, { params });
+        return response.data.products ?? []
+    } catch (error) {
+        throw new Error('Error fetching products by category' + error)
+    }
+}
+
+export const getProducts = async (limit: number, skip: number) => {
+    try {
+        const params = { limit, skip }
+        const response = await axiosInstance.get('/products', { params })
+        return response.data.products
+    } catch (error) {
+        throw new Error('Error fetching products' + error)
+    }
+}
+
+export const getProductCategories = async () => {
+    try {
+        const response = await axiosInstance.get('/products/categories')
+        return response.data
+    } catch (error) {
+        throw new Error('Error fetch product categories' + error)
     }
 }

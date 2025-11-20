@@ -1,9 +1,10 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import TopTabNavigator from "./TopTabNavigator";
 import ProfileScreen from "../screens/Profile";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import CatalogScreen from "../screens/Catalog";
+import { MainTabParamList } from "../types/navigation";
 
-const MainTab = createBottomTabNavigator()
+const MainTab = createBottomTabNavigator<MainTabParamList>()
 
 const getTabBarIcon = (route: any) => ({ color, size }: { color: string, size: number }) => {
     if (route.name === "Home") {
@@ -20,7 +21,7 @@ export default function MainTabNavigator() {
                 tabBarIcon: getTabBarIcon(route)
             })}
         >
-            <MainTab.Screen name="Home" component={TopTabNavigator} />
+            <MainTab.Screen name="Catalog" component={CatalogScreen} />
             <MainTab.Screen name="Profile" component={ProfileScreen} />
         </MainTab.Navigator>
     )

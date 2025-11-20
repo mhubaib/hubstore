@@ -3,22 +3,11 @@ import { ActivityIndicator, FlatList, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import ProductItem from "../components/ProductItem";
 import { useEffect, useState } from "react";
-import { getProductsByCategory } from "../api/product";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Product } from "../types/product";
+import { getProducts } from "../api/product";
 
-export type Product = {
-    id: number;
-    title: string;
-    description: string;
-    price: number;
-    category: string;
-    rating: number;
-    stock: number;
-    thumbnail: string;
-    images: string[];
-};
-
-
-export default function CatalogScreen({ category }: { category: string }) {
+export default function CatalogScreen() {
     const [loading, setLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [products, setProducts] = useState<Product[]>([])
@@ -33,8 +22,16 @@ export default function CatalogScreen({ category }: { category: string }) {
                 if (isMounted) {
                     setError(null)
                     setLoading(true)
-                    const result = await getProductsByCategory({ category, limit: 30 });
-                    setProducts(result);
+                    const localProducts = await AsyncStorage.getItem(`@app:products`)
+                    console.log('localProducts', localProducts)
+                    if (localProducts) {
+                        setProducts(JSON.parse(localProducts))
+                        setLoading(false)
+                        return
+                    } else {
+                        const result = await getProducts();
+                        setProducts(result);
+                    }
                 }
             } catch (err) {
                 if (isMounted) {
@@ -48,7 +45,7 @@ export default function CatalogScreen({ category }: { category: string }) {
         fetch()
 
         return () => { isMounted = false }
-    }, [category])
+    }, [])
 
     const pushToDetail = ({ id }: { id: number }) => {
         navigation.navigate("DetailScreen", { id });

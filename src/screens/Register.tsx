@@ -1,21 +1,19 @@
 import { useState } from "react";
-import { View, TextInput, Text, Button, Alert } from "react-native";
+import { View, TextInput, Text, Button } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../contexts/authContext";
 
-export default function LoginScreen({ navigation }: NativeStackScreenProps<any>) {
+export default function RegisterScreen({ navigation }: NativeStackScreenProps<any>) {
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
-    const { login } = useAuth()
+    const { register } = useAuth()
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
         try {
-            const credentials = await login(username, password)
-            if (credentials) {
-                navigation.navigate('MainDrawer')
-            } else {
-                Alert.alert("Invalid credentials");
+            const response = await register(username, password)
+            if (response) {
+                navigation.navigate('LoginScreen');
             }
         } catch (error) {
             console.error("Registration error:", error);
@@ -25,11 +23,11 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<any>)
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', gap: 10 }}>
-                <Text style={{ fontSize: 20, fontWeight: '500' }}>Login Screen</Text>
+                <Text style={{ fontSize: 20, fontWeight: '500' }}>Register Screen</Text>
                 <TextInput placeholder="username.." style={{ width: 300, height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10, borderRadius: 10 }} placeholderTextColor={'#7a7979ff'} value={username} onChangeText={setUsername} />
                 <TextInput placeholder="********" style={{ width: 300, height: 40, borderColor: 'gray', borderWidth: 1, marginBottom: 10, paddingHorizontal: 10, borderRadius: 10 }} placeholderTextColor={'#7a7979ff'} value={password} onChangeText={setPassword} secureTextEntry />
-                <Button title="Login" onPress={handleLogin} />
-                <Button title="Register" onPress={() => navigation.navigate('RegisterScreen')} />
+                <Button title="Register" onPress={handleRegister} />
+                <Button title="Login" onPress={() => navigation.navigate('LoginScreen')} />
             </View>
         </SafeAreaView>
     )

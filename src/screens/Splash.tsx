@@ -1,12 +1,15 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ActivityIndicator, Text, View } from "react-native";
 import { useEffect } from "react";
+import { useAuth } from "../contexts/authContext";
 
 export default function SplashScreen({ navigation }: { navigation: any }) {
+    const { setOnboardingCompleted } = useAuth()
     useEffect(() => {
         setTimeout(() => {
-            navigation.navigate('LoginScreen')
-        }, 2000)
+            setOnboardingCompleted(true)
+            navigation.replace('Auth')
+        }, 5000)
     }, [])
 
     return (

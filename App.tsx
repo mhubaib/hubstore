@@ -8,13 +8,16 @@
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigations/AppNavigator';
 import { NavigationContainer } from '@react-navigation/native';
+import { AuthProvider } from './src/contexts/authContext';
 
 function App() {
 
   return (
     <SafeAreaProvider>
       <NavigationContainer>
-        <AppNavigator />
+        <AuthProvider>
+          <AppNavigator />
+        </AuthProvider>
       </NavigationContainer>
     </SafeAreaProvider>
   );

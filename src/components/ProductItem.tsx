@@ -1,6 +1,6 @@
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from "react-native";
-import { Product } from "../navigations/TopTabNavigator";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Product } from "../types/product";
 
 export default function ProductItem({ product, onPress }: { product: Product, onPress: () => void }) {
     const { width } = useWindowDimensions()
@@ -35,6 +35,9 @@ export default function ProductItem({ product, onPress }: { product: Product, on
             fontSize: 12,
             color: 'gray',
             marginTop: 4,
+        },
+        containerCategory: {
+            
         }
     });
 

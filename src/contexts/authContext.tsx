@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useMemo, useState } from "react"
+import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
 import { AuthContextValue } from "../types/auth"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import KeyChain from 'react-native-keychain'
@@ -20,8 +20,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const loadCredentials = async () => {
         const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE })
-        creds ? setUsername(creds.username) : setUsername(null)
+        if (creds) {
+            setUsername(creds.username)
+            setIsAuthenticated(true)
+        }
+        setUsername(null)
     }
+
+    useEffect(() => {
+        loadCredentials()
+        loadOnboarding()
+    }, [])
 
     const register = async (usr: string, pwd: string) => {
         try {

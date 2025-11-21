@@ -2,9 +2,9 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import MainTabNavigator from "./MainTabNavigator";
 import DetailScreen from "../screens/Detail";
 import SettingScreen from "../screens/Setting";
-import { MainStackParamList } from "../types/navigation";
+import NotificationScreen from "../screens/Notification";
 
-const MainStack = createNativeStackNavigator<MainStackParamList>()
+const MainStack = createNativeStackNavigator<any>()
 
 export default function MainStackNavigator() {
     return (
@@ -16,6 +16,7 @@ export default function MainStackNavigator() {
             <MainStack.Screen name='MainTab' component={MainTabNavigator} />
             <MainStack.Screen name='DetailScreen' component={DetailScreen} />
             <MainStack.Screen name='SettingScreen' component={SettingScreen} />
+            <MainStack.Screen name='NotificationScreen' component={NotificationScreen} />
         </MainStack.Navigator>
     )
 }

@@ -1,53 +1,45 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, Button, TextInput } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { View, Button, Image, FlatList, Alert } from 'react-native';
+import { launchImageLibrary } from 'react-native-image-picker';
 
-const BasicStorage = () => {
-    const [username, setUsername] = useState('');
-    const [user, setUser] = useState('');
+const ImagePickerGallery = () => {
+    const [images, setImages] = useState([]);
 
-    const saveUser = async () => {
-        try {
-            await AsyncStorage.setItem('@app:username', JSON.stringify(user));
-            console.log('User saved');
-        } catch (e) {
-            console.error('Save error:', e);
-        }
-    };
+    const pickImages = () => {
+        const options = {
+            mediaType: 'photo',
+            selectionLimit: 0, // 0 artinya tidak terbatas (Unlimited)
+            quality: 0.8,
+        };
 
-    const loadUser = async () => {
-        try {
-            const usr = await AsyncStorage.getItem('@app:username');
-            if (usr !== null) {
-                setUsername(usr);
+        launchImageLibrary(options, (response) => {
+            if (response.didCancel) return;
+            if (response.errorCode) {
+                Alert.alert('Error', response.errorMessage);
+                return;
             }
-        } catch (e) {
-            console.error('Load error:', e);
-        }
+            if (response.assets) {
+                setImages(response.assets);
+            }
+        });
     };
-
-    const removeUser = async () => {
-        try {
-            await AsyncStorage.removeItem('@app:username');
-            setUsername('');
-        } catch (e) {
-            console.error('Remove error:', e);
-        }
-    };
-
-    useEffect(() => {
-        loadUser();
-    }, []);
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Text>Username: {username}</Text>
-            <TextInput style={{ borderWidth: 1, borderColor: 'black' }} placeholder='username...' onChangeText={setUser}/>
-            <Button title="Save User" onPress={saveUser} />
-            <Button title="Load User" onPress={loadUser} />
-            <Button title="Remove User" onPress={removeUser} />
+        <View style={{ flex: 1, padding: 10 }}>
+            <Button title="Pilih dari Galeri" onPress={pickImages} />
+            <FlatList
+                data={images}
+                keyExtractor={(item) => item.uri}
+                numColumns={3} // Tampilan Grid 3 kolom
+                renderItem={({ item }) => (
+                    <Image
+                        source={{ uri: item.uri }}
+                        style={{ width: 100, height: 100, margin: 5 }}
+                    />
+                )}
+            />
         </View>
     );
 };
 
-export default BasicStorage;
+export default ImagePickerGallery;

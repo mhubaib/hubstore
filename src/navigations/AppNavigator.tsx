@@ -1,8 +1,8 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MainDrawerNavigator from './MainDrawerNavigator';
 import SplashScreen from '../screens/Splash';
 import AuthStackNavigator from './AuthStackNavigator';
 import { useAuth } from '../contexts/authContext';
+import MainStackNavigator from './MainStackNavigator';
 
 const AppStack = createNativeStackNavigator()
 
@@ -21,8 +21,8 @@ export default function AppNavigator() {
             {!isAuthenticated && onboardingCompletedState && (
                 <AppStack.Screen name='Auth' component={AuthStackNavigator} />
             )}
-            {isAuthenticated && (
-                <AppStack.Screen name='MainDrawer' component={MainDrawerNavigator} />
+            {isAuthenticated && onboardingCompletedState && (
+                <AppStack.Screen name='MainStack' component={MainStackNavigator} />
             )}
         </AppStack.Navigator>
     )

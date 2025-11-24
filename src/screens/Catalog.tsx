@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductItem from "../components/ProductItem";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Product } from "../types/product";
 import { getProducts } from "../api/product";
@@ -25,18 +25,17 @@ export default function CatalogScreen() {
     const [error, setError] = useState<string | null>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [refreshing, setRefreshing] = useState<boolean>(false);
+    const [searchQuery, setSearchQuery] = useState<string>('');
     const navigation = useNavigation<any>();
     const scrollY = useSharedValue(0)
 
-    const fetch = async () => {
+    const fetch = useCallback(async () => {
         try {
             setError(null);
             setLoading(true);
             const localProducts = await AsyncStorage.getItem(`@app:products`);
             if (localProducts) {
                 setProducts(JSON.parse(localProducts));
-                setLoading(false);
-                return;
             } else {
                 const result = await getProducts();
                 setProducts(result);
@@ -46,7 +45,7 @@ export default function CatalogScreen() {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         let isMounted = true;
@@ -93,17 +92,23 @@ export default function CatalogScreen() {
         };
     });
 
-    const pushToDetail = ({ id }: { id: number }) => {
+    const pushToDetail = useCallback((id: number) => {
         navigation.navigate("DetailScreen", { id });
-    };
+    }, [navigation]);
 
-    const onRefresh = () => {
+    const onRefresh = useCallback(() => {
         setRefreshing(true);
         setTimeout(() => {
             fetch();
             setRefreshing(false);
         }, 1000);
-    };
+    }, [fetch]);
+
+    const filteredProducts = useMemo(() => {
+        return products.filter((product) =>
+            product.title.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+    }, [products, searchQuery]);
 
     if (loading) {
         return (
@@ -153,13 +158,14 @@ export default function CatalogScreen() {
                     <TextInput
                         placeholder="Search the entire shop"
                         style={styles.searchInput}
-                        placeholderTextColor={'#5e5c5cff'}
+                        placeholderTextColor={'#131212ff'}
+                        onChangeText={setSearchQuery}
                     />
                 </View>
             </Animated.View>
 
             <Animated.FlatList
-                data={products}
+                data={filteredProducts}
                 numColumns={2}
                 onScroll={onScroll}
                 scrollEventThrottle={16}
@@ -170,7 +176,7 @@ export default function CatalogScreen() {
                 columnWrapperStyle={styles.wrapperStyle}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                    <ProductItem product={item} onPress={() => pushToDetail(item)} />
+                    <ProductItem product={item} onPress={() => pushToDetail(item.id)} />
                 )}
                 ListHeaderComponent={
                     <View style={styles.headerList}>
@@ -230,6 +236,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 18,
     },
     searchInput: {
+        flex: 1,
+        color: '#131212ff',
         fontSize: 14,
     },
     rightButton: {

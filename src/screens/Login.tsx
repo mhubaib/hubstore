@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<any>)
             <KeyboardAvoidingView
                 style={styles.container}
                 behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0} // Sesuaikan offset jika perlu
+                keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
             >
                 <SafeAreaView style={styles.innerContainer}>
                     <ScrollView contentContainerStyle={styles.formLogin}>
@@ -41,7 +41,7 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<any>)
                         <TextInput placeholder="********" style={styles.input} placeholderTextColor={'#7a7979ff'} value={password} onChangeText={setPassword} secureTextEntry />
                         <Button title="Register" onPress={() => navigation.navigate('RegisterScreen')} />
                     </ScrollView>
-                    <ButtonCustom title="Login" onPress={handleLogin} />
+                    <ButtonCustom title="Login" onPress={handleLogin} iconLibrary="fontawesome" iconName="sign-in" iconSize={24} />
                 </SafeAreaView>
             </KeyboardAvoidingView>
         </SafeAreaView>

@@ -56,6 +56,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const logout = async () => {
+        await KeyChain.resetGenericPassword({service: KEYCHAIN_SERVICE})
         setIsAuthenticated(false)
         setUsername(null)
     }

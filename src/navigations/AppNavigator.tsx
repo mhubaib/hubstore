@@ -7,7 +7,7 @@ import MainStackNavigator from './MainStackNavigator';
 const AppStack = createNativeStackNavigator()
 
 export default function AppNavigator() {
-    const { isAuthenticated, onboardingCompletedState } = useAuth()
+    const { username, isAuthenticated, onboardingCompletedState } = useAuth()
 
     return (
         <AppStack.Navigator
@@ -18,10 +18,10 @@ export default function AppNavigator() {
             {!onboardingCompletedState && (
                 <AppStack.Screen name='SplashScreen' component={SplashScreen} />
             )}  
-            {!isAuthenticated && (
+            {!username || !isAuthenticated && (
                 <AppStack.Screen name='Auth' component={AuthStackNavigator} />
             )}
-            {isAuthenticated && onboardingCompletedState && (
+            {username && isAuthenticated && onboardingCompletedState && (
                 <AppStack.Screen name='MainStack' component={MainStackNavigator} />
             )}
         </AppStack.Navigator>

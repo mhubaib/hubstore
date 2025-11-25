@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react"
+import { createContext, ReactNode, useContext, useEffect, useState } from "react"
 import { AuthContextValue } from "../types/auth"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import KeyChain from 'react-native-keychain'
@@ -7,6 +7,7 @@ import { isSensorAvailable, simplePrompt } from "@sbaiahmed1/react-native-biomet
 
 export const KEYCHAIN_SERVICE = '@app:user-password'
 export const ONBOARDING_KEY = '@app:onboarding-completed'
+export const APP_AUTHENTICATED = '@app:authenticated'
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 
@@ -22,10 +23,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const loadCredentials = async () => {
         const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE })
-        if (creds) {
-            setUsername(creds.username)
+        const authenticated = await AsyncStorage.getItem(APP_AUTHENTICATED)
+        if (authenticated === 'true') {
             setIsAuthenticated(true)
         }
+        if (creds) {
+            setUsername(creds.username)
+        }
+        setIsAuthenticated(false)
         setUsername(null)
     }
 
@@ -47,6 +52,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         try {
             const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE })
             if (creds && creds.username === usr && creds.password === pwd) {
+                await AsyncStorage.setItem(APP_AUTHENTICATED, 'true')
                 setUsername(usr)
                 setIsAuthenticated(true)
                 return true
@@ -89,7 +95,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = async () => {
-        await KeyChain.resetGenericPassword({ service: KEYCHAIN_SERVICE })
         setIsAuthenticated(false)
         setUsername(null)
     }
@@ -113,7 +118,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await Promise.all([loadOnboarding(), loadCredentials()])
     }
 
-    const value = useMemo<AuthContextValue>(() => ({
+    const value = {
         username,
         isAuthenticated,
         onboardingCompletedState,
@@ -124,7 +129,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setOnboardingCompleted,
         refresh,
         biometricLogin,
-    }), [username, isAuthenticated, onboardingCompletedState])
+    }
 
     return (
         <AuthContext.Provider value={value}>

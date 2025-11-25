@@ -15,10 +15,10 @@ export default function AppNavigator() {
                 headerShown: false
             }}
         >
-            {!isAuthenticated && !onboardingCompletedState && (
+            {!onboardingCompletedState && (
                 <AppStack.Screen name='SplashScreen' component={SplashScreen} />
             )}  
-            {!isAuthenticated && onboardingCompletedState && (
+            {!isAuthenticated && (
                 <AppStack.Screen name='Auth' component={AuthStackNavigator} />
             )}
             {isAuthenticated && onboardingCompletedState && (

@@ -32,13 +32,13 @@ function App() {
   }
 
   return (
-    <SafeAreaProvider>
-      <NavigationContainer linking={linking}>
-        <AuthProvider>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <NavigationContainer linking={linking}>
           <AppNavigator />
-        </AuthProvider>
-      </NavigationContainer>
-    </SafeAreaProvider>
+        </NavigationContainer>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }
 

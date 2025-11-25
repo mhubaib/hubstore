@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { TextInput, Text, Button, Alert, StyleSheet, ScrollView, Platform, KeyboardAvoidingView } from "react-native";
+import { TextInput, Text, Button, Alert, StyleSheet, ScrollView, Platform, KeyboardAvoidingView, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { useAuth } from "../contexts/authContext";
 import ButtonCustom from "../components/Button";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 export default function LoginScreen({ navigation }: NativeStackScreenProps<any>) {
     const [password, setPassword] = useState<string>('');
     const [username, setUsername] = useState<string>('');
-    const { login } = useAuth()
+    const { login, biometricLogin } = useAuth()
 
     const handleLogin = async () => {
         if (!username || !password) {
@@ -27,6 +28,20 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<any>)
         }
     }
 
+    const handleLoginBiometric = async () => {
+        try {
+            const result = await biometricLogin();
+            if (result) {
+                navigation.navigate('MainDrawer')
+            } else {
+                Alert.alert("Biometric authentication failed");
+            }
+        } catch (error) {
+            console.error("Biometric login error:", error);
+            Alert.alert("Error", "Biometric login failed.");
+        }
+    }
+
     return (
         <SafeAreaView style={styles.container}>
             <KeyboardAvoidingView
@@ -42,6 +57,9 @@ export default function LoginScreen({ navigation }: NativeStackScreenProps<any>)
                         <Button title="Register" onPress={() => navigation.navigate('RegisterScreen')} />
                     </ScrollView>
                     <ButtonCustom title="Login" onPress={handleLogin} iconLibrary="fontawesome" iconName="sign-in" iconSize={24} />
+                    <TouchableOpacity onPress={handleLoginBiometric}>
+                        <Ionicons name="finger-print" size={40} color="green" />
+                    </TouchableOpacity>
                 </SafeAreaView>
             </KeyboardAvoidingView>
         </SafeAreaView>

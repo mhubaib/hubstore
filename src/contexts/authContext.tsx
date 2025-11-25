@@ -2,6 +2,8 @@ import { createContext, ReactNode, useContext, useEffect, useMemo, useState } fr
 import { AuthContextValue } from "../types/auth"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import KeyChain from 'react-native-keychain'
+import { Alert } from "react-native"
+import { isSensorAvailable, simplePrompt } from "@sbaiahmed1/react-native-biometrics"
 
 export const KEYCHAIN_SERVICE = '@app:user-password'
 export const ONBOARDING_KEY = '@app:onboarding-completed'
@@ -55,15 +57,46 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    const biometricLogin = async () => {
+
+        const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE });
+
+        if (!creds) {
+            Alert.alert('Anda belum mempunyai akun!', 'Login manual terlebih dahulu.');
+            return false;
+        }
+
+        const { available } = await isSensorAvailable();
+        if (!available) {
+            Alert.alert('Maaf', 'Sensor tidak tersedia');
+            return false;
+        }
+
+        const { success } = await simplePrompt(
+            'Login',
+        );
+
+        if (success) {
+            if (creds) {
+                setUsername(creds.username)
+                setIsAuthenticated(true)
+                Alert.alert('Welcome Back!', `Halo ${creds.username ?? 'User'}, Anda berhasil login.`);
+            } else {
+                Alert.alert('Info', 'Tidak ada data tersimpan. Login manual dulu.');
+            }
+        }
+        return true;
+    };
+
     const logout = async () => {
-        await KeyChain.resetGenericPassword({service: KEYCHAIN_SERVICE})
+        await KeyChain.resetGenericPassword({ service: KEYCHAIN_SERVICE })
         setIsAuthenticated(false)
         setUsername(null)
     }
 
     const resetCredentials = async () => {
         try {
-            await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE })
+            await KeyChain.resetGenericPassword({ service: KEYCHAIN_SERVICE })
             setUsername(null)
             setIsAuthenticated(false)
         } catch (error) {
@@ -90,6 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         resetCredentials,
         setOnboardingCompleted,
         refresh,
+        biometricLogin,
     }), [username, isAuthenticated, onboardingCompletedState])
 
     return (

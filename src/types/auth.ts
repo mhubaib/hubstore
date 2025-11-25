@@ -8,4 +8,5 @@ export type AuthContextValue = {
     resetCredentials: () => Promise<void>,
     setOnboardingCompleted: (completed: boolean) => Promise<void>,
     refresh: () => Promise<void>,
+    biometricLogin: () => Promise<boolean>,
 }

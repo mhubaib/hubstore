@@ -17,8 +17,8 @@ export default function AppNavigator() {
         >
             {!onboardingCompletedState && (
                 <AppStack.Screen name='SplashScreen' component={SplashScreen} />
-            )}  
-            {!username || !isAuthenticated && (
+            )}
+            {(!username || !isAuthenticated) && (
                 <AppStack.Screen name='Auth' component={AuthStackNavigator} />
             )}
             {username && isAuthenticated && onboardingCompletedState && (

@@ -14,6 +14,7 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [username, setUsername] = useState<string | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
+    const [loading, setLoading] = useState<boolean>(true)
     const [onboardingCompletedState, setOnboardingCompletedState] = useState<boolean>(false)
 
     const loadOnboarding = async () => {
@@ -24,19 +25,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const loadCredentials = async () => {
         const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE })
         const authenticated = await AsyncStorage.getItem(APP_AUTHENTICATED)
-        if (authenticated === 'true') {
+
+        if (authenticated === 'true' && creds) {
             setIsAuthenticated(true)
-        }
-        if (creds) {
             setUsername(creds.username)
+        } else {
+            setIsAuthenticated(false)
+            setUsername(null)
         }
-        setIsAuthenticated(false)
-        setUsername(null)
     }
 
     useEffect(() => {
-        loadCredentials()
-        loadOnboarding()
+        try {
+            setLoading(true)
+            loadCredentials()
+            loadOnboarding()
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
     }, [])
 
     const register = async (usr: string, pwd: string) => {
@@ -86,6 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (creds) {
                 setUsername(creds.username)
                 setIsAuthenticated(true)
+                await AsyncStorage.setItem(APP_AUTHENTICATED, 'true')
                 Alert.alert('Welcome Back!', `Halo ${creds.username ?? 'User'}, Anda berhasil login.`);
             } else {
                 Alert.alert('Info', 'Tidak ada data tersimpan. Login manual dulu.');
@@ -97,6 +106,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const logout = async () => {
         setIsAuthenticated(false)
         setUsername(null)
+        await AsyncStorage.removeItem(APP_AUTHENTICATED)
     }
 
     const resetCredentials = async () => {
@@ -122,6 +132,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username,
         isAuthenticated,
         onboardingCompletedState,
+        loading,
         register,
         login,
         logout,

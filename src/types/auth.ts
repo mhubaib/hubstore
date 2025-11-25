@@ -1,4 +1,5 @@
 export type AuthContextValue = {
+    loading: boolean,
     username: string | null,
     isAuthenticated: boolean,
     onboardingCompletedState: boolean,

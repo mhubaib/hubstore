@@ -9,6 +9,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import AppNavigator from './src/navigations/AppNavigator';
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './src/contexts/authContext';
+import { enableScreens } from 'react-native-screens';
+
+enableScreens();
 
 function App() {
 
@@ -22,9 +25,15 @@ function App() {
             RegisterScreen: 'register',
           }
         },
-        MainDrawer: {
+        MainStack: {
           screens: {
-
+            MainTab: {
+              screens: {
+                CatalogScreen: 'catalog',
+                CartScreen: 'cart',
+                ProfileScreen: 'profile',
+              }
+            }
           }
         }
       }

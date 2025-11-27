@@ -74,7 +74,7 @@ export default function ButtonCustom({
 
 const styles = StyleSheet.create({
     button: {
-        minWidth: 300,
+        minWidth: 100,
         height: 45,
         flexDirection: 'row',
         justifyContent: 'center',

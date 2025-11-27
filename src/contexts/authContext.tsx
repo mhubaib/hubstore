@@ -2,7 +2,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from "react
 import { AuthContextValue } from "../types/auth"
 import AsyncStorage from "@react-native-async-storage/async-storage"
 import KeyChain from 'react-native-keychain'
-import { Alert } from "react-native"
+import { ToastAndroid } from "react-native"
 import { isSensorAvailable, simplePrompt } from "@sbaiahmed1/react-native-biometrics"
 
 export const KEYCHAIN_SERVICE = '@app:user-password'
@@ -72,35 +72,40 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const biometricLogin = async () => {
+        try {
+            const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE });
 
-        const creds = await KeyChain.getGenericPassword({ service: KEYCHAIN_SERVICE });
-
-        if (!creds) {
-            Alert.alert('Anda belum mempunyai akun!', 'Login manual terlebih dahulu.');
-            return false;
-        }
-
-        const { available } = await isSensorAvailable();
-        if (!available) {
-            Alert.alert('Maaf', 'Sensor tidak tersedia');
-            return false;
-        }
-
-        const { success } = await simplePrompt(
-            'Login',
-        );
-
-        if (success) {
-            if (creds) {
-                setUsername(creds.username)
-                setIsAuthenticated(true)
-                await AsyncStorage.setItem(APP_AUTHENTICATED, 'true')
-                Alert.alert('Welcome Back!', `Halo ${creds.username ?? 'User'}, Anda berhasil login.`);
-            } else {
-                Alert.alert('Info', 'Tidak ada data tersimpan. Login manual dulu.');
+            if (!creds) {
+                ToastAndroid.show('Anda belum mempunyai akun!', ToastAndroid.LONG);
+                return false;
             }
+
+            const { available } = await isSensorAvailable();
+            if (!available) {
+                ToastAndroid.show('Sensor tidak tersedia', ToastAndroid.LONG);
+                return false;
+            }
+
+            const { success } = await simplePrompt(
+                'Login',
+            );
+
+            if (success) {
+                if (creds) {
+                    setUsername(creds.username)
+                    setIsAuthenticated(true)
+                    await AsyncStorage.setItem(APP_AUTHENTICATED, 'true')
+                    ToastAndroid.show('Selamat datang kembali!', ToastAndroid.LONG);
+                } else {
+                    ToastAndroid.show('Tidak ada data tersimpan. Login manual dulu.', ToastAndroid.LONG);
+                }
+            }
+            return true;
+        } catch (error) {
+            console.error('Biometric login failed', error);
+            ToastAndroid.show('Biometric login failed', ToastAndroid.LONG);
+            return false;
         }
-        return true;
     };
 
     const logout = async () => {

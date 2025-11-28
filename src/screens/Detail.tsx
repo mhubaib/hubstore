@@ -6,6 +6,7 @@ import { getProductById } from "../api/product";
 import Ionicons from "@react-native-vector-icons/ionicons";
 import ButtonCustom from "../components/Button";
 import { useCart } from "../contexts/cartContext";
+import { useWishlist } from "../contexts/wishlistContext";
 import { Product } from "../types/product";
 
 export default function DetailScreen() {
@@ -19,6 +20,7 @@ export default function DetailScreen() {
     const [error, setError] = useState<string | null>(null);
     const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
     const { addToCart } = useCart();
+    const { addToWishlist, removeFromWishlist, isInWishlist } = useWishlist();
 
     useEffect(() => {
         let mounted = true;
@@ -75,8 +77,23 @@ export default function DetailScreen() {
                     <Ionicons name="arrow-back" size={24} color="#1A1A1A" />
                 </TouchableOpacity>
                 <Text style={styles.headerTitle}>Product Detail</Text>
-                <TouchableOpacity style={styles.iconButton}>
-                    <Ionicons name="heart-outline" size={24} color="#1A1A1A" />
+                <TouchableOpacity
+                    style={styles.iconButton}
+                    onPress={() => {
+                        if (product) {
+                            if (isInWishlist(product.id)) {
+                                removeFromWishlist(product.id);
+                            } else {
+                                addToWishlist(product);
+                            }
+                        }
+                    }}
+                >
+                    <Ionicons
+                        name={product && isInWishlist(product.id) ? "heart" : "heart-outline"}
+                        size={24}
+                        color={product && isInWishlist(product.id) ? "#FF4444" : "#1A1A1A"}
+                    />
                 </TouchableOpacity>
             </View>
 

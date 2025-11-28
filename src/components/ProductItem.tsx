@@ -44,7 +44,7 @@ export default function ProductItem({ product, onPress }: { product: Product, on
                 <View style={styles.footer}>
                     <Text style={styles.price}>${product.price.toFixed(2)}</Text>
                     <TouchableOpacity style={styles.addButton} onPress={() => addToCart(product)}>
-                        <Ionicons name="add" size={20} color="#fff" />
+                        <Ionicons name="cart-outline" size={20} color="#fff" />
                     </TouchableOpacity>
                 </View>
             </View>

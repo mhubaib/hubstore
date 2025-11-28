@@ -159,14 +159,14 @@ export default function CatalogScreen() {
 
                 <Animated.View style={[styles.addressContainer, addressStyle]}>
                     <TouchableOpacity style={styles.rightButton} onPress={() => navigation.navigate('WishlistScreen')}>
-                        <Ionicons name="heart-outline" size={30} color="#ff0303ff" />
+                        <Ionicons name="heart-outline" size={26} color="#ff0303ff" />
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.title}>Solutions for your needs</Text>
                         <Text style={styles.address}>Mini E-Commerce</Text>
                     </View>
                     <TouchableOpacity style={styles.leftButton} onPress={() => navigation.navigate('NotificationScreen')}>
-                        <FontAwesome name="bell" size={30} color="#f3bf13ff" />
+                        <FontAwesome name="bell" size={26} color="#f3bf13ff" />
                     </TouchableOpacity>
                 </Animated.View>
 

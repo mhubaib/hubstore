@@ -4,10 +4,12 @@ import { useAuth } from '../contexts/authContext';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ButtonCustom from '../components/Button';
 import { useCart } from '../contexts/cartContext';
+import { useWishlist } from '../contexts/wishlistContext';
 
 const ProfileScreen = () => {
     const { logout, username } = useAuth();
     const { cartItems, clearCart } = useCart();
+    const { wishlistItems, clearWishlist } = useWishlist();
 
     const handleLogout = () => {
         Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -20,6 +22,7 @@ const ProfileScreen = () => {
                 style: 'destructive',
                 onPress: () => {
                     clearCart();
+                    clearWishlist();
                     logout();
                 }
             }
@@ -71,7 +74,7 @@ const ProfileScreen = () => {
                     </View>
                     <View style={styles.statCard}>
                         <Ionicons name="heart-outline" size={24} color="#FF4444" />
-                        <Text style={styles.statValue}>8</Text>
+                        <Text style={styles.statValue}>{wishlistItems.length ?? 0}</Text>
                         <Text style={styles.statLabel}>Wishlist</Text>
                     </View>
                     <View style={styles.statCard}>

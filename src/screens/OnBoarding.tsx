@@ -3,7 +3,7 @@ import { ActivityIndicator, Text, View } from "react-native";
 import { useEffect } from "react";
 import { useAuth } from "../contexts/authContext";
 
-export default function SplashScreen({ navigation }: { navigation: any }) {
+export default function OnBoardingScreen({ navigation }: { navigation: any }) {
     const { setOnboardingCompleted } = useAuth()
     useEffect(() => {
         setTimeout(() => {

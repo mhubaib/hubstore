@@ -2,11 +2,7 @@ import { useEffect, useRef } from 'react';
 import { Animated, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@react-native-vector-icons/ionicons';
 
-interface SplashScreenProps {
-    onFinish: () => void;
-}
-
-export default function SplashScreen({ onFinish }: SplashScreenProps) {
+export default function SplashScreen() {
     const fadeAnim = useRef(new Animated.Value(0)).current;
     const scaleAnim = useRef(new Animated.Value(0.3)).current;
     const slideAnim = useRef(new Animated.Value(50)).current;
@@ -31,17 +27,7 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
                 duration: 600,
                 useNativeDriver: true,
             }),
-        ]).start(() => {
-            setTimeout(() => {
-                Animated.timing(fadeAnim, {
-                    toValue: 0,
-                    duration: 400,
-                    useNativeDriver: true,
-                }).start(() => {
-                    onFinish();
-                });
-            }, 1000);
-        });
+        ]).start();
     }, []);
 
     return (

@@ -9,7 +9,7 @@ interface WishlistContextType {
     removeFromWishlist: (id: number) => void;
     isInWishlist: (id: number) => boolean;
     clearWishlist: () => void;
-    loading: boolean;
+    loadWishlist: () => Promise<void>;
     error: string | null;
 }
 
@@ -19,30 +19,23 @@ export const WISHLIST_KEY = '@wishlist_products';
 
 export const WishlistProvider = ({ children }: { children: ReactNode }) => {
     const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadWishlist = async () => {
-            try {
-                setLoading(true);
-                const storedWishlist = await AsyncStorage.getItem(WISHLIST_KEY);
-                if (storedWishlist) {
-                    setWishlistItems(JSON.parse(storedWishlist));
-                }
-            } catch (error) {
-                console.error('Failed to load wishlist:', error);
-                setError('Failed to load wishlist');
-            } finally {
-                setLoading(false);
+    const loadWishlist = async () => {
+        try {
+            const storedWishlist = await AsyncStorage.getItem(WISHLIST_KEY);
+            if (storedWishlist) {
+                setWishlistItems(JSON.parse(storedWishlist));
             }
-        };
-        loadWishlist();
-    }, []);
+        } catch (error) {
+            console.error('Failed to load wishlist:', error);
+            setError('Failed to load wishlist');
+        } finally {
+        }
+    };
 
     const addToWishlist = (item: Product) => {
         try {
-            setLoading(true);
             const newWishlist = [...wishlistItems, item];
             AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(newWishlist));
             setWishlistItems(newWishlist);
@@ -50,14 +43,11 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error('Failed to add to wishlist:', error);
             setError('Failed to add to wishlist');
-        } finally {
-            setLoading(false);
         }
     };
 
     const removeFromWishlist = (id: number) => {
         try {
-            setLoading(true);
             const newWishlist = wishlistItems.filter((item) => item.id !== id);
             AsyncStorage.setItem(WISHLIST_KEY, JSON.stringify(newWishlist));
             setWishlistItems(newWishlist);
@@ -65,8 +55,6 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
         } catch (error) {
             console.error('Failed to remove from wishlist:', error);
             setError('Failed to remove from wishlist');
-        } finally {
-            setLoading(false);
         }
     };
 
@@ -76,20 +64,17 @@ export const WishlistProvider = ({ children }: { children: ReactNode }) => {
 
     const clearWishlist = () => {
         try {
-            setLoading(true);
             AsyncStorage.removeItem(WISHLIST_KEY);
             setWishlistItems([]);
             ToastAndroid.show('Wishlist cleared', ToastAndroid.SHORT);
         } catch (error) {
             console.error('Failed to clear wishlist:', error);
             setError('Failed to clear wishlist');
-        } finally {
-            setLoading(false);
         }
     };
 
     return (
-        <WishlistContext.Provider value={{ wishlistItems, addToWishlist, removeFromWishlist, isInWishlist, clearWishlist, loading, error }}>
+        <WishlistContext.Provider value={{ wishlistItems, addToWishlist, removeFromWishlist, isInWishlist, clearWishlist, error, loadWishlist }}>
             {children}
         </WishlistContext.Provider>
     );

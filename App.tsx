@@ -4,14 +4,11 @@ import { AuthProvider } from './src/contexts/authContext';
 import { enableScreens } from 'react-native-screens';
 import { CartProvider } from './src/contexts/cartContext';
 import { WishlistProvider } from './src/contexts/wishlistContext';
-import { useState } from 'react';
 import AppNavigator from './src/navigations/AppNavigator';
-import SplashScreen from './src/screens/Splash';
 
 enableScreens();
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
 
   const linking: LinkingOptions<any> = {
     prefixes: ['hubstore://'],
@@ -36,10 +33,6 @@ function App() {
         }
       }
     }
-  }
-
-  if (showSplash) {
-    return <SplashScreen onFinish={() => setShowSplash(false)} />;
   }
 
   return (

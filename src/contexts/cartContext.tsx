@@ -8,7 +8,7 @@ interface CartContextType {
     addToCart: (item: Product) => void;
     removeFromCart: (id: number) => void;
     clearCart: () => void;
-    loading: boolean;
+    loadProducts: () => Promise<void>;
     error: string | null;
 }
 
@@ -18,71 +18,58 @@ export const PRODUCT_KEY = '@cart_products';
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<Product[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        const loadProducts = async () => {
-            try {
-                setLoading(true);
-                const storedProducts = await AsyncStorage.getItem(PRODUCT_KEY);
-                if (storedProducts) {
-                    setCartItems(JSON.parse(storedProducts));
-                }
-            } catch (error) {
-                console.error('Failed to load products:', error);
-                setError('Failed to load products');
-            } finally {
-                setLoading(false);
+    const loadProducts = async () => {
+        try {
+            const storedProducts = await AsyncStorage.getItem(PRODUCT_KEY);
+            if (storedProducts) {
+                setCartItems(JSON.parse(storedProducts));
             }
-        };
-        loadProducts();
-    }, []);
+        } catch (error) {
+            console.error('Failed to load products:', error);
+            setError('Failed to load products');
+        }
+    };
 
     const addToCart = (item: Product) => {
         try {
-            setLoading(true);
             AsyncStorage.setItem(PRODUCT_KEY, JSON.stringify([...cartItems, item]));
             setCartItems((prevItems) => [...prevItems, item]);
         } catch (error) {
             console.error('Failed to add product to cart:', error);
             setError('Failed to add product to cart');
         } finally {
-            setLoading(false);
             ToastAndroid.show('Product added to cart', ToastAndroid.SHORT);
         }
     };
 
     const removeFromCart = (id: number) => {
         try {
-            setLoading(true);
             AsyncStorage.setItem(PRODUCT_KEY, JSON.stringify(cartItems.filter((item) => item.id !== id)));
             setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
         } catch (error) {
             console.error('Failed to remove product from cart:', error);
             setError('Failed to remove product from cart');
         } finally {
-            setLoading(false);
             ToastAndroid.show('Product removed from cart', ToastAndroid.SHORT);
         }
     };
 
     const clearCart = () => {
         try {
-            setLoading(true);
             AsyncStorage.removeItem(PRODUCT_KEY);
             setCartItems([]);
         } catch (error) {
             console.error('Failed to clear cart:', error);
             setError('Failed to clear cart');
         } finally {
-            setLoading(false);
             ToastAndroid.show('Cart cleared', ToastAndroid.SHORT);
         }
     };
 
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, loading, error }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart, error, loadProducts }}>
             {children}
         </CartContext.Provider>
     );

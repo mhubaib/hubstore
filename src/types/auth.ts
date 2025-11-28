@@ -1,5 +1,4 @@
 export type AuthContextValue = {
-    loading: boolean,
     username: string | null,
     isAuthenticated: boolean,
     onboardingCompletedState: boolean,
@@ -10,4 +9,6 @@ export type AuthContextValue = {
     setOnboardingCompleted: (completed: boolean) => Promise<void>,
     refresh: () => Promise<void>,
     biometricLogin: () => Promise<boolean>,
+    loadCredentials: () => Promise<void>,
+    loadOnboarding: () => Promise<void>,
 }

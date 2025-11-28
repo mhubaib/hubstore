@@ -14,7 +14,6 @@ const AuthContext = createContext<AuthContextValue | undefined>(undefined)
 export function AuthProvider({ children }: { children: ReactNode }) {
     const [username, setUsername] = useState<string | null>(null)
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false)
-    const [loading, setLoading] = useState<boolean>(true)
     const [onboardingCompletedState, setOnboardingCompletedState] = useState<boolean>(false)
 
     const loadOnboarding = async () => {
@@ -34,18 +33,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUsername(null)
         }
     }
-
-    useEffect(() => {
-        try {
-            setLoading(true)
-            loadCredentials()
-            loadOnboarding()
-        } catch (error) {
-            console.log(error)
-        } finally {
-            setLoading(false)
-        }
-    }, [])
 
     const register = async (usr: string, pwd: string) => {
         try {
@@ -141,7 +128,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         username,
         isAuthenticated,
         onboardingCompletedState,
-        loading,
         register,
         login,
         logout,
@@ -149,6 +135,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setOnboardingCompleted,
         refresh,
         biometricLogin,
+        loadCredentials,
+        loadOnboarding,
     }
 
     return (

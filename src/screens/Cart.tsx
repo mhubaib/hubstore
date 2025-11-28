@@ -1,4 +1,4 @@
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useCart } from "../contexts/cartContext";
 import Ionicons from "@react-native-vector-icons/ionicons";
@@ -7,6 +7,38 @@ import { useMemo } from "react";
 
 export default function CartScreen() {
     const { cartItems, removeFromCart, clearCart } = useCart();
+
+    const handleClearCart = () => {
+        Alert.alert('Clear cart', 'Are you sure you want to clear cart?', [
+            {
+                text: 'Cancel',
+                style: 'cancel'
+            },
+            {
+                text: 'Clear',
+                style: 'destructive',
+                onPress: () => {
+                    clearCart();
+                }
+            }
+        ])
+    }
+
+    const handleRemoveProduct = (id: number) => {
+        Alert.alert('Remove product', 'Are you sure you want to remove this product?', [
+            {
+                text: 'Cancel',
+                style: 'cancel'
+            },
+            {
+                text: 'Remove',
+                style: 'destructive',
+                onPress: () => {
+                    removeFromCart(id);
+                }
+            }
+        ])
+    }
 
     const summary = useMemo(() => {
         const subtotal = cartItems.reduce((sum, item) => sum + item.price, 0);
@@ -42,7 +74,7 @@ export default function CartScreen() {
 
             <TouchableOpacity
                 style={styles.deleteButton}
-                onPress={() => removeFromCart(item.id)}
+                onPress={() => handleRemoveProduct(item.id)}
             >
                 <Ionicons name="trash-outline" size={20} color="#FF4444" />
             </TouchableOpacity>
@@ -54,7 +86,7 @@ export default function CartScreen() {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Shopping Cart</Text>
                 {cartItems.length > 0 && (
-                    <TouchableOpacity onPress={clearCart} style={styles.clearButtonContainer}>
+                    <TouchableOpacity onPress={handleClearCart} style={styles.clearButtonContainer}>
                         <Text style={styles.clearButton}>Clear All</Text>
                     </TouchableOpacity>
                 )}

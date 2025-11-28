@@ -14,7 +14,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | null>(null);
 
-const PRODUCT_KEY = '@cart_products';
+export const PRODUCT_KEY = '@cart_products';
 
 export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [cartItems, setCartItems] = useState<Product[]>([]);
@@ -54,55 +54,31 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const removeFromCart = (id: number) => {
-        Alert.alert('Remove product', 'Are you sure want to remove product?', [
-            {
-                text: 'Cancel',
-                style: 'cancel'
-            },
-            {
-                text: 'Remove',
-                style: 'destructive',
-                onPress: () => {
-                    try {
-                        setLoading(true);
-                        AsyncStorage.setItem(PRODUCT_KEY, JSON.stringify(cartItems.filter((item) => item.id !== id)));
-                        setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
-                    } catch (error) {
-                        console.error('Failed to remove product from cart:', error);
-                        setError('Failed to remove product from cart');
-                    } finally {
-                        setLoading(false);
-                        ToastAndroid.show('Product removed from cart', ToastAndroid.SHORT);
-                    }
-                }
-            }
-        ])
+        try {
+            setLoading(true);
+            AsyncStorage.setItem(PRODUCT_KEY, JSON.stringify(cartItems.filter((item) => item.id !== id)));
+            setCartItems((prevItems) => prevItems.filter((item) => item.id !== id));
+        } catch (error) {
+            console.error('Failed to remove product from cart:', error);
+            setError('Failed to remove product from cart');
+        } finally {
+            setLoading(false);
+            ToastAndroid.show('Product removed from cart', ToastAndroid.SHORT);
+        }
     };
 
     const clearCart = () => {
-        Alert.alert('Clear cart', 'Are you sure you want to clear cart?', [
-            {
-                text: 'Cancel',
-                style: 'cancel'
-            },
-            {
-                text: 'Clear',
-                style: 'destructive',
-                onPress: () => {
-                    try {
-                        setLoading(true);
-                        AsyncStorage.removeItem(PRODUCT_KEY);
-                        setCartItems([]);
-                    } catch (error) {
-                        console.error('Failed to clear cart:', error);
-                        setError('Failed to clear cart');
-                    } finally {
-                        setLoading(false);
-                        ToastAndroid.show('Cart cleared', ToastAndroid.SHORT);
-                    }
-                }
-            }
-        ])
+        try {
+            setLoading(true);
+            AsyncStorage.removeItem(PRODUCT_KEY);
+            setCartItems([]);
+        } catch (error) {
+            console.error('Failed to clear cart:', error);
+            setError('Failed to clear cart');
+        } finally {
+            setLoading(false);
+            ToastAndroid.show('Cart cleared', ToastAndroid.SHORT);
+        }
     };
 
     return (

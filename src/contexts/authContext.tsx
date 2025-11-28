@@ -109,9 +109,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     const logout = async () => {
-        setIsAuthenticated(false)
-        setUsername(null)
-        await AsyncStorage.removeItem(APP_AUTHENTICATED)
+        try {
+            setIsAuthenticated(false)
+            setUsername(null)
+            await AsyncStorage.removeItem(APP_AUTHENTICATED)
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const resetCredentials = async () => {
@@ -120,7 +124,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             setUsername(null)
             setIsAuthenticated(false)
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 

@@ -42,15 +42,15 @@ function App() {
   }
 
   return (
-    <AuthProvider>
-      <CartProvider>
+    <CartProvider>
+      <AuthProvider>
         <SafeAreaProvider>
           <NavigationContainer linking={linking}>
             <AppNavigator />
           </NavigationContainer>
         </SafeAreaProvider>
-      </CartProvider>
-    </AuthProvider>
+      </AuthProvider>
+    </CartProvider>
   );
 }
 

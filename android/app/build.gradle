@@ -77,9 +77,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.mini_ecommerce"
+    namespace "com.hubstore"
     defaultConfig {
-        applicationId "com.mini_ecommerce"
+        applicationId "com.hubstore"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

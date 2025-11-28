@@ -54,7 +54,7 @@ export default function CartScreen() {
             <View style={styles.header}>
                 <Text style={styles.headerTitle}>Shopping Cart</Text>
                 {cartItems.length > 0 && (
-                    <TouchableOpacity onPress={clearCart}>
+                    <TouchableOpacity onPress={clearCart} style={styles.clearButtonContainer}>
                         <Text style={styles.clearButton}>Clear All</Text>
                     </TouchableOpacity>
                 )}
@@ -135,11 +135,6 @@ const styles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold',
         color: '#1A1A1A',
-    },
-    clearButton: {
-        fontSize: 14,
-        fontWeight: '600',
-        color: '#FF4444',
     },
     emptyContainer: {
         flex: 1,
@@ -272,4 +267,15 @@ const styles = StyleSheet.create({
     checkoutButtonContainer: {
         marginTop: 8,
     },
+    clearButtonContainer: {
+        backgroundColor: '#FF4444',
+        padding: 8,
+        borderRadius: 8,
+        alignItems: 'center',
+    },
+    clearButton: {
+        color: '#fff',
+        fontSize: 14,
+        fontWeight: '600',
+    }
 });

@@ -10,6 +10,7 @@ import AppNavigator from './src/navigations/AppNavigator';
 import { LinkingOptions, NavigationContainer } from '@react-navigation/native';
 import { AuthProvider } from './src/contexts/authContext';
 import { enableScreens } from 'react-native-screens';
+import { CartProvider } from './src/contexts/cartContext';
 
 enableScreens();
 
@@ -42,11 +43,13 @@ function App() {
 
   return (
     <AuthProvider>
-      <SafeAreaProvider>
-        <NavigationContainer linking={linking}>
-          <AppNavigator />
-        </NavigationContainer>
-      </SafeAreaProvider>
+      <CartProvider>
+        <SafeAreaProvider>
+          <NavigationContainer linking={linking}>
+            <AppNavigator />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

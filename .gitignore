@@ -74,4 +74,4 @@ yarn-error.log
 !.yarn/sdks
 !.yarn/versions
 
-android/app/hubaibapp-upload-key.keystore
+android/app/hubstore-upload-key.keystore

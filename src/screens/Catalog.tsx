@@ -18,6 +18,7 @@ import { Product } from "../types/product";
 import { getProducts } from "../api/product";
 import Animated, { Extrapolation, interpolate, useAnimatedScrollHandler, useAnimatedStyle, useSharedValue } from "react-native-reanimated";
 import FontAwesome from "@react-native-vector-icons/fontawesome";
+import Ionicons from "@react-native-vector-icons/ionicons";
 
 const HEADER_MAX = 160;
 const HEADER_MIN = 90;
@@ -115,12 +116,10 @@ export default function CatalogScreen() {
     const filteredProducts = useMemo(() => {
         let filtered = products;
 
-        // Filter by category
         if (selectedCategory !== 'All') {
             filtered = filtered.filter((product) => product.category === selectedCategory);
         }
 
-        // Filter by search query
         if (searchQuery) {
             filtered = filtered.filter((product) =>
                 product.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -158,21 +157,19 @@ export default function CatalogScreen() {
         <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
             <Animated.View style={[styles.headerContainer, headerStyle]}>
 
-                {/* Address section */}
                 <Animated.View style={[styles.addressContainer, addressStyle]}>
-                    <TouchableOpacity style={styles.rightButton} onPress={() => navigation.navigate('SettingScreen')}>
-                        <FontAwesome name="cog" size={24} color="black" />
+                    <TouchableOpacity style={styles.rightButton} onPress={() => navigation.navigate('WishlistScreen')}>
+                        <Ionicons name="heart-outline" size={30} color="#ff0303ff" />
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.title}>Solutions for your needs</Text>
                         <Text style={styles.address}>Mini E-Commerce</Text>
                     </View>
                     <TouchableOpacity style={styles.leftButton} onPress={() => navigation.navigate('NotificationScreen')}>
-                        <FontAwesome name="bell" size={24} color="black" />
+                        <FontAwesome name="bell" size={30} color="#f3bf13ff" />
                     </TouchableOpacity>
                 </Animated.View>
 
-                {/* Search Bar */}
                 <View style={styles.searchWrapper}>
                     <FontAwesome name="search" size={20} color="#5e5c5cff" />
                     <TextInput

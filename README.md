@@ -1,97 +1,278 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# 🛒 HubStore - E-Commerce Mobile Application
 
-# Getting Started
+<div align="center">
+  <img src="https://img.shields.io/badge/React%20Native-0.76.6-61DAFB?style=for-the-badge&logo=react&logoColor=white" />
+  <img src="https://img.shields.io/badge/TypeScript-5.0.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+  <img src="https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/Version-1.0.0-2D5F2E?style=for-the-badge" />
+</div>
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## 📱 About
 
-## Step 1: Start Metro
+**HubStore** is a modern, elegant e-commerce mobile application built with React Native. It features a beautiful UI/UX design, smooth animations, and comprehensive shopping functionalities including product browsing, cart management, wishlist, and user authentication with biometric support.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+### ✨ Key Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- 🎨 **Elegant UI/UX** - Modern, professional design with smooth animations
+- 🔐 **Secure Authentication** - Login/Register with biometric authentication support
+- 🛍️ **Product Catalog** - Browse products with category filtering and search
+- 🛒 **Shopping Cart** - Add, remove, and manage cart items with real-time calculations
+- ❤️ **Wishlist** - Save favorite products for later
+- 👤 **User Profile** - Manage account settings and preferences
+- 🔔 **Notifications** - Stay updated with order and promotional notifications
+- 📸 **Image Picker** - Upload profile pictures from camera or gallery
+- 🌐 **Deep Linking** - Support for `hubstore://` URL scheme
+- 💾 **Persistent Storage** - Data persistence with AsyncStorage
+- 🎭 **Splash Screen** - Beautiful animated splash screen on app launch
 
-```sh
-# Using npm
+## 🎯 Screenshots
+
+> Add your app screenshots here
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js >= 18
+- React Native development environment setup
+- Android Studio (for Android development)
+- JDK 17 or higher
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/mhubaib/hubstore.git
+   cd hubstore
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install iOS dependencies** (macOS only)
+   ```bash
+   cd ios && pod install && cd ..
+   ```
+
+4. **Start Metro bundler**
+   ```bash
+   npm start
+   ```
+
+5. **Run on Android**
+   ```bash
+   npm run android
+   ```
+
+6. **Run on iOS** (macOS only)
+   ```bash
+   npm run ios
+   ```
+
+## 📦 Tech Stack
+
+### Core
+- **React Native** 0.76.6 - Mobile framework
+- **TypeScript** 5.0.4 - Type safety
+- **React** 18.3.1 - UI library
+
+### Navigation
+- **@react-navigation/native** 7.0.13 - Navigation container
+- **@react-navigation/native-stack** 7.1.10 - Stack navigator
+- **@react-navigation/drawer** 7.0.6 - Drawer navigator
+- **@react-navigation/bottom-tabs** 7.2.1 - Tab navigator
+
+### State Management & Storage
+- **React Context API** - Global state management
+- **@react-native-async-storage/async-storage** 2.1.0 - Persistent storage
+
+### UI Components & Styling
+- **react-native-safe-area-context** 5.0.0 - Safe area handling
+- **react-native-screens** 4.4.0 - Native screen optimization
+- **@react-native-vector-icons** 10.2.0 - Icon library
+- **react-native-reanimated** 3.16.5 - Smooth animations
+
+### Authentication & Security
+- **react-native-keychain** 9.0.0 - Secure credential storage
+- **@sbaiahmed1/react-native-biometrics** 3.0.1 - Biometric authentication
+
+### Additional Features
+- **axios** 1.7.9 - HTTP client
+- **react-native-image-picker** 7.1.2 - Image selection
+
+## 🏗️ Project Structure
+
+```
+hubstore/
+├── android/                 # Android native code
+├── ios/                     # iOS native code
+├── src/
+│   ├── api/                # API services
+│   │   └── product.ts      # Product API calls
+│   ├── components/         # Reusable components
+│   │   ├── Button.tsx      # Custom button component
+│   │   ├── Chip.tsx        # Category chip component
+│   │   ├── Input.tsx       # Custom input component
+│   │   └── ProductItem.tsx # Product card component
+│   ├── contexts/           # React Context providers
+│   │   ├── authContext.tsx     # Authentication state
+│   │   ├── cartContext.tsx     # Shopping cart state
+│   │   └── wishlistContext.tsx # Wishlist state
+│   ├── navigations/        # Navigation configuration
+│   │   ├── AppNavigator.tsx        # Root navigator
+│   │   ├── AuthStackNavigator.tsx  # Auth flow
+│   │   ├── MainStackNavigator.tsx  # Main app flow
+│   │   └── MainTabNavigator.tsx    # Bottom tabs
+│   ├── screens/            # App screens
+│   │   ├── Cart.tsx        # Shopping cart
+│   │   ├── Catalog.tsx     # Product catalog
+│   │   ├── Detail.tsx      # Product details
+│   │   ├── Login.tsx       # Login screen
+│   │   ├── Notification.tsx # Notifications
+│   │   ├── OnBoarding.tsx  # Onboarding flow
+│   │   ├── Profile.tsx     # User profile
+│   │   ├── Register.tsx    # Registration
+│   │   ├── Splash.tsx      # Splash screen
+│   │   └── Wishlist.tsx    # Wishlist
+│   └── types/              # TypeScript types
+│       ├── auth.ts         # Auth types
+│       └── product.ts      # Product types
+├── App.tsx                 # App entry point
+└── package.json           # Dependencies
+```
+
+## 🎨 Design Features
+
+### Color Palette
+- **Primary Green**: `#2D5F2E` - Brand color
+- **Background**: `#F5F7FA` - Light gray
+- **Card**: `#FFFFFF` - White
+- **Text Primary**: `#1A1A1A` - Dark gray
+- **Text Secondary**: `#666666` - Medium gray
+
+### UI Components
+- ✅ Custom Button with variants (primary, secondary, outline)
+- ✅ Custom Input with icons and password toggle
+- ✅ Product cards with rating and stock indicators
+- ✅ Category filter chips
+- ✅ Bottom sheet modals
+- ✅ Animated splash screen
+- ✅ Empty states for cart, wishlist, and notifications
+
+## 🔐 Authentication Flow
+
+1. **Splash Screen** - App initialization with data loading
+2. **Onboarding** - First-time user experience (optional)
+3. **Login/Register** - Secure authentication with keychain storage
+4. **Biometric Login** - Fingerprint/Face ID support
+5. **Main App** - Access to all features
+
+## 🛍️ Shopping Features
+
+### Product Catalog
+- Browse all products
+- Filter by category
+- Search products
+- View product details with image carousel
+- Star ratings and stock indicators
+
+### Shopping Cart
+- Add/remove products
+- Real-time price calculations
+- Tax and shipping calculations
+- Order summary
+- Proceed to checkout
+
+### Wishlist
+- Save favorite products
+- Quick add to cart from wishlist
+- Remove items with confirmation
+- Grid layout for easy browsing
+
+## 📱 Deep Linking
+
+The app supports deep linking with the `hubstore://` URL scheme:
+
+```
+hubstore://login          # Navigate to login
+hubstore://register       # Navigate to register
+hubstore://catalog        # Navigate to catalog
+hubstore://cart           # Navigate to cart
+hubstore://profile        # Navigate to profile
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+Create a `.env` file in the root directory:
+
+```env
+API_BASE_URL=https://dummyjson.com
+```
+
+### Android Configuration
+- **Package Name**: `com.mini_ecommerce`
+- **Min SDK**: 23
+- **Target SDK**: 34
+- **Deep Link Scheme**: `hubstore://`
+
+## 📝 Scripts
+
+```bash
+# Start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Run on Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Run on iOS
 npm run ios
 
-# OR using Yarn
-yarn ios
+# Run tests
+npm test
+
+# Lint code
+npm run lint
+
+# Build Android APK
+cd android && ./gradlew assembleRelease
+
+# Build Android AAB
+cd android && ./gradlew bundleRelease
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## 🤝 Contributing
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
-## Step 3: Modify your app
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-Now that you have successfully run the app, let's make changes!
+## 📄 License
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## 👨‍💻 Author
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+**Muhammad Hubaib**
+- GitHub: [@mhubaib](https://github.com/mhubaib)
 
-## Congratulations! :tada:
+## 🙏 Acknowledgments
 
-You've successfully run and modified your React Native App. :partying_face:
+- [React Native](https://reactnative.dev/)
+- [React Navigation](https://reactnavigation.org/)
+- [DummyJSON API](https://dummyjson.com/)
+- [React Native Vector Icons](https://github.com/oblador/react-native-vector-icons)
 
-### Now what?
+---
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+<div align="center">
+  Made with ❤️ using React Native
+  
+  **HubStore** - Shop Smart, Live Better
+</div>

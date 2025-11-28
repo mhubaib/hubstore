@@ -1,9 +1,11 @@
 import { Image, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View, Platform } from "react-native";
 import { Product } from "../types/product";
 import Ionicons from "@react-native-vector-icons/ionicons";
+import { useCart } from "../contexts/cartContext";
 
 export default function ProductItem({ product, onPress }: { product: Product, onPress: () => void }) {
     const { width } = useWindowDimensions();
+    const { addToCart } = useCart();
 
     const cardWidth = (width - 40) / 2;
 
@@ -41,9 +43,9 @@ export default function ProductItem({ product, onPress }: { product: Product, on
 
                 <View style={styles.footer}>
                     <Text style={styles.price}>${product.price.toFixed(2)}</Text>
-                    <View style={styles.addButton}>
+                    <TouchableOpacity style={styles.addButton} onPress={() => addToCart(product)}>
                         <Ionicons name="add" size={20} color="#fff" />
-                    </View>
+                    </TouchableOpacity>
                 </View>
             </View>
         </TouchableOpacity>
@@ -141,5 +143,6 @@ const styles = StyleSheet.create({
         borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
+        zIndex: 10,
     },
 });

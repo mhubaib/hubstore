@@ -7,9 +7,11 @@ import {
     View,
     StyleSheet,
     TouchableOpacity,
+    ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ProductItem from "../components/ProductItem";
+import Chip from "../components/Chip";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Product } from "../types/product";
@@ -26,6 +28,7 @@ export default function CatalogScreen() {
     const [products, setProducts] = useState<Product[]>([]);
     const [refreshing, setRefreshing] = useState<boolean>(false);
     const [searchQuery, setSearchQuery] = useState<string>('');
+    const [selectedCategory, setSelectedCategory] = useState<string>('All');
     const navigation = useNavigation<any>();
     const scrollY = useSharedValue(0)
 
@@ -104,11 +107,28 @@ export default function CatalogScreen() {
         }, 1000);
     }, [fetch]);
 
+    const categories = useMemo(() => {
+        const uniqueCategories = Array.from(new Set(products.map(p => p.category)));
+        return ['All', ...uniqueCategories];
+    }, [products]);
+
     const filteredProducts = useMemo(() => {
-        return products.filter((product) =>
-            product.title.toLowerCase().includes(searchQuery.toLowerCase())
-        );
-    }, [products, searchQuery]);
+        let filtered = products;
+
+        // Filter by category
+        if (selectedCategory !== 'All') {
+            filtered = filtered.filter((product) => product.category === selectedCategory);
+        }
+
+        // Filter by search query
+        if (searchQuery) {
+            filtered = filtered.filter((product) =>
+                product.title.toLowerCase().includes(searchQuery.toLowerCase())
+            );
+        }
+
+        return filtered;
+    }, [products, searchQuery, selectedCategory]);
 
     if (loading) {
         return (
@@ -180,7 +200,20 @@ export default function CatalogScreen() {
                 )}
                 ListHeaderComponent={
                     <View style={styles.headerList}>
-                        <Text style={styles.title}>All Products</Text>
+                        <ScrollView
+                            horizontal
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={styles.chipContainer}
+                        >
+                            {categories.map((category) => (
+                                <Chip
+                                    key={category}
+                                    label={category}
+                                    selected={selectedCategory === category}
+                                    onPress={() => setSelectedCategory(category)}
+                                />
+                            ))}
+                        </ScrollView>
                     </View>
                 }
             />
@@ -255,5 +288,11 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 25,
-    }
+    },
+    headerList: {
+        marginBottom: 16,
+    },
+    chipContainer: {
+        paddingRight: 15,
+    },
 });

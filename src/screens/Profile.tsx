@@ -1,15 +1,19 @@
-import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAuth } from '../contexts/authContext';
 import Ionicons from '@react-native-vector-icons/ionicons';
 import ButtonCustom from '../components/Button';
 import { useCart } from '../contexts/cartContext';
 import { useWishlist } from '../contexts/wishlistContext';
+import { useState } from 'react';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 
 const ProfileScreen = () => {
     const { logout, username } = useAuth();
     const { cartItems, clearCart } = useCart();
     const { wishlistItems, clearWishlist } = useWishlist();
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [imageProfile, setImageProfile] = useState<string | null>(null);
 
     const handleLogout = () => {
         Alert.alert('Logout', 'Are you sure you want to logout?', [
@@ -28,6 +32,77 @@ const ProfileScreen = () => {
             }
         ])
     };
+
+    const handleCamera = async () => {
+        try {
+            await launchCamera({
+                mediaType: 'photo',
+                maxHeight: 70,
+                maxWidth: 70,
+                quality: 1,
+                saveToPhotos: true,
+            }, (response) => {
+                if (response.assets && response.assets.length > 0) {
+                    setImageProfile(response.assets[0].uri ?? null)
+                }
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const handleLibrary = async () => {
+        try {
+            await launchImageLibrary({
+                mediaType: 'photo',
+                maxHeight: 70,
+                maxWidth: 70,
+                quality: 1,
+            }, (response) => {
+                if (response.assets && response.assets.length > 0) {
+                    setImageProfile(response.assets[0].uri ?? null)
+                }
+            })
+        } catch (error) {
+            console.error(error)
+        }
+    }
+
+    const renderModalImagePicker = () => {
+        return (
+            <Modal
+                visible={isModalVisible}
+                animationType="fade"
+                transparent={true}
+                onRequestClose={() => setIsModalVisible(false)}
+            >
+                <View style={styles.modalContainer}>
+                    <TouchableOpacity
+                        style={styles.modalOverlay}
+                        activeOpacity={1}
+                        onPress={() => setIsModalVisible(false)}
+                    />
+                    <View style={styles.modalContent}>
+                        <View style={styles.modalHandle} />
+                        <Text style={styles.modalTitle}>Select Image</Text>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => { setIsModalVisible(false); handleLibrary() }}>
+                            <Text style={styles.modalButtonText}>Choose from Library</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => { setIsModalVisible(false); handleCamera() }}>
+                            <Text style={styles.modalButtonText}>Take a Photo</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.modalButton} onPress={() => setIsModalVisible(false)}>
+                            <Text style={styles.modalButtonText}>Cancel</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
+        )
+    }
+
+    if (isModalVisible) {
+        return renderModalImagePicker();
+    }
 
     const menuItems = [
         { id: '1', icon: 'person-outline', title: 'Edit Profile', subtitle: 'Update your personal information', onPress: () => { } },
@@ -48,10 +123,16 @@ const ProfileScreen = () => {
 
                 <View style={styles.userCard}>
                     <View style={styles.avatarContainer}>
-                        <View style={styles.avatar}>
-                            <Ionicons name="person" size={40} color="#2D5F2E" />
-                        </View>
-                        <TouchableOpacity style={styles.editAvatarButton}>
+                        {imageProfile ? (
+                            <View style={styles.avatar}>
+                                <Image source={{ uri: imageProfile }} style={styles.avatarImage} />
+                            </View>
+                        ) : (
+                            <View style={styles.avatar}>
+                                <Ionicons name="person" size={40} color="#2D5F2E" />
+                            </View>
+                        )}
+                        <TouchableOpacity style={styles.editAvatarButton} onPress={() => setIsModalVisible(true)}>
                             <Ionicons name="camera" size={16} color="#fff" />
                         </TouchableOpacity>
                     </View>
@@ -279,6 +360,54 @@ const styles = StyleSheet.create({
         color: '#999',
         marginBottom: 24,
     },
+    modalContainer: {
+        flex: 1,
+        justifyContent: 'flex-end',
+    },
+    modalOverlay: {
+        flex: 1,
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderTopLeftRadius: 24,
+        borderTopRightRadius: 24,
+        paddingTop: 8,
+        paddingBottom: 32,
+        paddingHorizontal: 20,
+        maxHeight: '40%',
+    },
+    modalHandle: {
+        width: 40,
+        height: 4,
+        backgroundColor: '#DDD',
+        borderRadius: 2,
+        alignSelf: 'center',
+        marginBottom: 16,
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#1A1A1A',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    modalButton: {
+        backgroundColor: '#F0F2F5',
+        paddingVertical: 16,
+        borderRadius: 12,
+        marginBottom: 12,
+        alignItems: 'center',
+    },
+    modalButtonText: {
+        fontSize: 16,
+        fontWeight: '500',
+        color: '#1A1A1A',
+    },
+    avatarImage: {
+        width: '100%',
+        height: '100%',
+        borderRadius: 100,
+    }
 });
 
 export default ProfileScreen;
